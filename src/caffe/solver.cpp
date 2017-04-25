@@ -96,8 +96,14 @@ void Solver<Dtype>::InitTrainNet() {
   net_state.set_phase(TRAIN);
   net_state.MergeFrom(net_param.state());
   net_state.MergeFrom(param_.train_state());
+    LOG_IF(INFO, Caffe::root_solver())
+           << "lvfeng 01 Creating training net from train_net file: " ;
   net_param.mutable_state()->CopyFrom(net_state);
+    LOG_IF(INFO, Caffe::root_solver())
+           << "lvfeng 02 Creating training net from train_net file: " ;
   net_.reset(new Net<Dtype>(net_param));
+    LOG_IF(INFO, Caffe::root_solver())
+           << "lvfeng 03 Creating training net from train_net file: " ;
 }
 
 template <typename Dtype>
@@ -304,9 +310,9 @@ void Solver<Dtype>::Solve(const char* resume_file) {
   if (param_.display() && iter_ % param_.display() == 0) {
     int average_loss = this->param_.average_loss();
     Dtype loss;
-    net_->Forward(&loss);
+    //net_->Forward(&loss);
 
-    UpdateSmoothedLoss(loss, start_iter, average_loss);
+    //UpdateSmoothedLoss(loss, start_iter, average_loss);
 
     LOG(INFO) << "Iteration " << iter_ << ", loss = " << smoothed_loss_;
   }

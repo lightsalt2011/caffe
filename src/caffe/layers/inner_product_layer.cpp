@@ -18,6 +18,7 @@ void InnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   // Dimensions starting from "axis" are "flattened" into a single
   // length K_ vector. For example, if bottom[0]'s shape is (N, C, H, W),
   // and axis == 1, N inner products with dimension CHW are performed.
+//    LOG(INFO) << "lvfeng 10 Skipping parameter initialization";
   K_ = bottom[0]->count(axis);
   // Check if we need to set up the weights
   if (this->blobs_.size() > 0) {
@@ -65,6 +66,7 @@ void InnerProductLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
       << "Input size incompatible with inner product parameters.";
   // The first "axis" dimensions are independent inner products; the total
   // number of these is M_, the product over these dimensions.
+//    LOG(INFO) << "lvfeng 11 Skipping parameter initialization";
   M_ = bottom[0]->count(0, axis);
   // The top shape will be the bottom shape with the flattened axes dropped,
   // and replaced by a single axis with dimension num_output (N_).
@@ -86,6 +88,7 @@ void InnerProductLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* bottom_data = bottom[0]->cpu_data();
   Dtype* top_data = top[0]->mutable_cpu_data();
   const Dtype* weight = this->blobs_[0]->cpu_data();
+//    LOG(INFO) << "lvfeng 12 Skipping parameter initialization";
   caffe_cpu_gemm<Dtype>(CblasNoTrans, transpose_ ? CblasNoTrans : CblasTrans,
       M_, N_, K_, (Dtype)1.,
       bottom_data, weight, (Dtype)0., top_data);
@@ -104,6 +107,7 @@ void InnerProductLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     const Dtype* top_diff = top[0]->cpu_diff();
     const Dtype* bottom_data = bottom[0]->cpu_data();
     // Gradient with respect to weight
+//    LOG(INFO) << "lvfeng 13 Skipping parameter initialization";
     if (transpose_) {
       caffe_cpu_gemm<Dtype>(CblasTrans, CblasNoTrans,
           K_, N_, M_,

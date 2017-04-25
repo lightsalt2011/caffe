@@ -20,6 +20,8 @@ void SoftmaxWithLossLayer<Dtype>::LayerSetUp(
   softmax_top_vec_.push_back(&prob_);
   softmax_layer_->SetUp(softmax_bottom_vec_, softmax_top_vec_);
 
+//  LOG(INFO) << "lvfeng 31 SoftmaxWithLossLayer setup"; 
+
   has_ignore_label_ =
     this->layer_param_.loss_param().has_ignore_label();
   if (has_ignore_label_) {
@@ -95,6 +97,7 @@ void SoftmaxWithLossLayer<Dtype>::Forward_cpu(
   int dim = prob_.count() / outer_num_;
   int count = 0;
   Dtype loss = 0;
+//  LOG(INFO) << "lvfeng 32 SoftmaxWithLossLayer Forward_cpu"; 
   for (int i = 0; i < outer_num_; ++i) {
     for (int j = 0; j < inner_num_; j++) {
       const int label_value = static_cast<int>(label[i * inner_num_ + j]);
@@ -122,6 +125,7 @@ void SoftmaxWithLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
                << " Layer cannot backpropagate to label inputs.";
   }
   if (propagate_down[0]) {
+//  LOG(INFO) << "lvfeng 32 SoftmaxWithLossLayer Backward_cpu"; 
     Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
     const Dtype* prob_data = prob_.cpu_data();
     caffe_copy(prob_.count(), prob_data, bottom_diff);

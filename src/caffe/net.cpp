@@ -127,7 +127,7 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
       }
       blob_loss_weights_[top_id_vecs_[layer_id][top_id]] = layer->loss(top_id);
       LOG_IF(INFO, Caffe::root_solver())
-          << "Top shape: " << top_vecs_[layer_id][top_id]->shape_string();
+          << "Top shape: " << top_vecs_[layer_id][top_id]->shape_string() << "layer_id"<<layer_id << "top_id"<<top_id;
       if (layer->loss(top_id)) {
         LOG_IF(INFO, Caffe::root_solver())
             << "    with loss weight " << layer->loss(top_id);
@@ -135,7 +135,8 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
       memory_used_ += top_vecs_[layer_id][top_id]->count();
     }
     LOG_IF(INFO, Caffe::root_solver())
-        << "Memory required for data: " << memory_used_ * sizeof(Dtype);
+        << "Memory required for data: " << memory_used_ * sizeof(Dtype) << "memory_used_ : " \
+		<< memory_used_ <<"sizeof(Dtype):" << sizeof(Dtype);
     const int param_size = layer_param.param_size();
     const int num_param_blobs = layers_[layer_id]->blobs().size();
     CHECK_LE(param_size, num_param_blobs)
@@ -251,7 +252,8 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
     layer_names_index_[layer_names_[layer_id]] = layer_id;
   }
   ShareWeights();
-  debug_info_ = param.debug_info();
+  //debug_info_ = param.debug_info();
+  debug_info_ = true;
   LOG_IF(INFO, Caffe::root_solver()) << "Network initialization done.";
 }
 
@@ -523,6 +525,9 @@ Dtype Net<Dtype>::ForwardFromTo(int start, int end) {
     }
     Dtype layer_loss = layers_[i]->Forward(bottom_vecs_[i], top_vecs_[i]);
     loss += layer_loss;
+    //LOG_IF(INFO, Caffe::root_solver())
+     //   << " lvfeng 21   [Forward] ";
+
     if (debug_info_) { ForwardDebugInfo(i); }
     for (int c = 0; c < after_forward_.size(); ++c) {
       after_forward_[c]->run(i);
